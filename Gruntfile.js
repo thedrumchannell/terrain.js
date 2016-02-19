@@ -2,13 +2,13 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     copy: {
-        dist: {
-          files: [{
-            src: 'terrain.js',
-            dest: 'build/'
-          }]
-        }
-      },
+      dist: {
+        files: [{
+          src: 'terrain.js',
+          dest: 'build/'
+        }]
+      }
+    },
     uglify: {
       options: {
         banner: '/*! Terrain.js v<%= pkg.version %> */\n',
