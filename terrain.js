@@ -1,6 +1,6 @@
 /**
- * Terrain.js 1.0.0
- * @copyright (c) 2015 Brandon Channell
+ * Terrain.js 1.0.1
+ * @copyright (c) 2015-2016 Brandon Channell
  * @license MIT License
  */
 
@@ -181,7 +181,7 @@
         };
         
         /**
-         * Returns the scale value
+         * Returns the terrain scale value
          * @return {Number} scale
          */
         
@@ -190,7 +190,7 @@
         };
         
         /**
-         * Returns the size value
+         * Returns the terrain size value
          * @return {Number} size
          */
         
