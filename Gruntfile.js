@@ -1,6 +1,14 @@
 module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+    copy: {
+        dist: {
+          files: [{
+            src: 'terrain.js',
+            dest: 'build/'
+          }]
+        }
+      },
     uglify: {
       options: {
         banner: '/*! Terrain.js v<%= pkg.version %> */\n',
@@ -10,7 +18,7 @@ module.exports = function(grunt) {
       dist: {
         files: {
           'build/terrain-min.js': [
-            'terrain.js'
+            'build/terrain.js'
           ]
         }
       }
@@ -25,8 +33,9 @@ module.exports = function(grunt) {
     },
   });
 
-  grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-connect');
+  grunt.loadNpmTasks('grunt-contrib-copy');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
 
-  grunt.registerTask('default', ['uglify']);
+  grunt.registerTask('default', ['copy', 'uglify']);
 };
