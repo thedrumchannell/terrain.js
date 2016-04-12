@@ -14,7 +14,7 @@
      * @param {Number} seed The unique identifier value
      * @param {Number} roughness The amount of roughness used during generation
      * @param {Number} scale The amount of scaling used during generation
-     * @param {Object} boundries The space conditions for the specified value
+     * @param {Object} boundaries The space conditions for the specified value
      * @param {Array} presets The preset values to set instead of generation
      * @return {Array} heights
      */
@@ -24,8 +24,8 @@
         // extended map size
         var extended = size * Math.pow(2, scale) / 2 * 3 + 1,
         
-            // update the boundries
-            boundries = {
+            // update the boundaries
+            boundaries = {
                 x: -Infinity,
                 y: -Infinity,
                 width: Infinity,
@@ -185,9 +185,9 @@
         this.setHeight = function(x, y, value) {
             heights[x] = heights[x] || [];
             
-            // check outside boundries
-            if (!this.inBoundries(x, y)) {
-                return heights[x][y] = boundries.value;
+            // check outside boundaries
+            if (!this.inBoundaries(x, y)) {
+                return heights[x][y] = boundaries.value;
             }
             
             // check for presets value
@@ -221,25 +221,25 @@
         };
          
         /**
-         * Updates the boundries object
-         * @param {Object} obj The boundries object
-         * @param {Object} boundries
+         * Updates the boundaries object
+         * @param {Object} obj The boundaries object
+         * @param {Object} boundaries
          */
         
-        this.updateBoundries = function(obj) {
-            return boundries = obj;
+        this.updateBoundaries = function(obj) {
+            return boundaries = obj;
         };
         
         /**
-         * Returns true if given x and y position are outside of the boundries
+         * Returns true if given x and y position are outside of the boundaries
          * @param {Number} x The x position
          * @param {Number} y The y position
          */
         
-        this.inBoundries = function(x, y) {
+        this.inBoundaries = function(x, y) {
             return !(
-                x <= boundries.x || x >= boundries.x + boundries.width ||
-                y <= boundries.y || y >= boundries.y + boundries.height
+                x <= boundaries.x || x >= boundaries.x + boundaries.width ||
+                y <= boundaries.y || y >= boundaries.y + boundaries.height
             );
         };
     
