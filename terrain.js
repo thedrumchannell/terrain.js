@@ -14,9 +14,6 @@
      * @param {Number} seed The unique identifier value
      * @param {Number} roughness The amount of roughness used during generation
      * @param {Number} scale The amount of scaling used during generation
-     * @param {Object} boundaries The space conditions for the specified value
-     * @param {Array} presets The preset values to set instead of generation
-     * @return {Array} heights
      */
     
     window.Terrain = function(x1, y1, size, seed, roughness, scale) {
@@ -43,6 +40,7 @@
     
         /**
          * Generates an array of heights for this terrain map
+         * @return {Array} heights
          */
         
         this.generateHeights = function(values) {
