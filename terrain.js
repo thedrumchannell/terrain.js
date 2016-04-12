@@ -1,6 +1,6 @@
 /**
- * Terrain.js 1.0.1
- * @copyright (c) 2015-2016 Brandon Channell
+ * Terrain.js 1.1.0
+ * @copyright (c) 2015 Brandon Channell
  * @license MIT License
  */
 
@@ -10,31 +10,45 @@
      * A class for generating random infinite height maps using the diamond-square algorithm
      * @param {Number} x1 The x starting position
      * @param {Number} y1 The y starting position
-     * @param {Number} dimension The width and height of this map, Ex: 256
+     * @param {Number} size The width and height of this map, Ex: 256
      * @param {Number} seed The unique identifier value
      * @param {Number} roughness The amount of roughness used during generation
      * @param {Number} scale The amount of scaling used during generation
+     * @param {Object} boundries The space conditions for the specified value
+     * @param {Array} presets The preset values to set instead of generation
+     * @return {Array} heights
      */
     
-    window.Terrain = function(x1, y1, dimension, seed, roughness, scale) {
+    window.Terrain = function(x1, y1, size, seed, roughness, scale) {
         
-        // array of height values
-        var heights = [],
+        // extended map size
+        var extended = size * Math.pow(2, scale) / 2 * 3 + 1,
         
-            // extended map size
-            size = dimension * Math.pow(2, scale) / 2 * 3 + 1,
+            // update the boundries
+            boundries = {
+                x: -Infinity,
+                y: -Infinity,
+                width: Infinity,
+                height: Infinity
+            },
+            
+            // array of height values
+            heights = [],
         
-            // set scaling
-            scale = scale || 1;
+            // array of preset values
+            presets = [],
+        
+        // update scale factor
+        scale = scale || 1;
     
         /**
          * Generates an array of heights for this terrain map
          */
         
-        this.generateHeights = function() {
+        this.generateHeights = function(values) {
             
             // step size
-            var step = dimension * Math.pow(2, scale) / 2,
+            var step = size * Math.pow(2, scale) / 2,
                 
                 // step half (center)
                 half = step / 2,
@@ -63,16 +77,16 @@
                 // update half step
                 half = step / 2;
                 
-                // only generate heights required for dimension
-                if (step <= dimension) {
+                // only generate heights required for size
+                if (step <= size) {
                     
                     // update start positions
                     sx = x1 - half;
                     sy = y1 - half;
                     
                     // update end positions
-                    ex = x1 + dimension + half;
-                    ey = y1 + dimension + half;
+                    ex = x1 + size + half;
+                    ey = y1 + size + half;
                 } else {
                     
                     // update start positions
@@ -108,6 +122,8 @@
                 // update the step
                 step /= 2;
             }
+            
+            return heights;
         };
         
         /**
@@ -168,7 +184,17 @@
         
         this.setHeight = function(x, y, value) {
             heights[x] = heights[x] || [];
-            heights[x][y] = value;
+            
+            // check outside boundries
+            if (!this.inBoundries(x, y)) {
+                return heights[x][y] = boundries.value;
+            }
+            
+            // check for presets value
+            if (presets[x] && presets[x][y]) {
+                return heights[x][y] = presets[x][y];
+            }
+            return heights[x][y] = value;
         };
         
         /**
@@ -179,23 +205,42 @@
         this.getHeights = function() {
             return heights;
         };
-        
+         
         /**
-         * Returns the terrain scale value
-         * @return {Number} scale
+         * Sets values for given array of preset objects
+         * @param {Array} objs The preset values
          */
         
-        this.getScale = function() {
-            return scale;
+        this.addPresets = function(objs) {
+            for (var i = 0; i < objs.length; i++) {
+                var x = objs[i].x,
+                    y = objs[i].y;
+                presets[x] = presets[x] || [];
+                presets[x][y] = objs[i].value;
+            }
+        };
+         
+        /**
+         * Updates the boundries object
+         * @param {Object} obj The boundries object
+         * @param {Object} boundries
+         */
+        
+        this.updateBoundries = function(obj) {
+            return boundries = obj;
         };
         
         /**
-         * Returns the terrain size value
-         * @return {Number} size
+         * Returns true if given x and y position are outside of the boundries
+         * @param {Number} x The x position
+         * @param {Number} y The y position
          */
         
-        this.getSize = function() {
-            return size;
+        this.inBoundries = function(x, y) {
+            return !(
+                x <= boundries.x || x >= boundries.x + boundries.width ||
+                y <= boundries.y || y >= boundries.y + boundries.height
+            );
         };
     
         /**
@@ -207,7 +252,7 @@
          */
         
         this.displace = function(x, y, range) {
-            return (this.random(x, y) - 0.5) * (range / (size * 2) * roughness);
+            return (this.random(x, y) - 0.5) * (range / (extended * 2) * roughness);
         };
         
         /**
