@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Terrain</title>
+        <script type="text/javascript" src="../terrain.js"></script>
+        <script type="text/javascript">
+            (function() {
+                window.onload = function() {
+                
+                    /**
+                     * Returns a random integer between min and max
+                     */
+                    
+                    var randomInt = function(min, max) {
+                        return Math.floor(Math.random() * (max - min + 1)) + min;
+                    };
+                    
+                    // canvas and terrain variables
+                    var canvas = document.getElementById("canvas"),
+                        ctx = canvas.getContext("2d"),
+                        size = canvas.width = canvas.height = 512,
+                        
+                        // reusables
+                        height, i, rgb,
+                        
+                        // canvas imageData
+                        imageData = ctx.createImageData(size, size),
+                        
+                        // the terrain object
+                        map = new Terrain(0, 0, size, randomInt(1000000, 9999999), 12, 1);
+                        
+                        // update the boundries
+                        map.updateBoundries({ x: 0, y: 0, width: size, height: size, value: 0.2 });
+                        
+                        // add preset values
+                        map.addPresets([{ x: 256, y: 256, value: 0.5 }]);
+                        
+                        // generate terrain heights
+                        map.generateHeights();
+                    
+                    // manipulate canvas pixels
+                    for (var x = 0; x < size; x++) {
+                        for (var y = 0; y < size; y++) {
+                            
+                            height = map.getHeight(x, y);
+                            i = (x + y * size) * 4;
+                            
+                            if (height > 0.4) {
+                                rgb = [100, 100, 100];
+                            } else if (height > 0.3) {
+                                rgb = [120, 120, 120];
+                            } else {
+                                rgb = [160, 160, 160];
+                            }
+                            
+                            imageData.data[i + 0] = rgb[0];
+                            imageData.data[i + 1] = rgb[1];
+                            imageData.data[i + 2] = rgb[2];
+                            imageData.data[i + 3] = 255;
+                        }
+                    }
+                    
+                    // copy imageData to image
+                    ctx.putImageData(imageData, 0, 0);
+                }
+            })();
+        </script>
+    </head>
+    <body>
+        <canvas id="canvas"></canvas>
+    </body>
+</html>
