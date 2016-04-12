@@ -19,10 +19,16 @@ var randomInt = function(min, max) {
 var map = new Terrain(0, 0, 256, randomInt(1000000, 9999999), 12, 1);
 ```
 
-```javascript
-// optional: update the boundries
-map.updateBoundries({ x: 0, y: 0, width: 256, height: 256, value: 0.16 });
+### Control heights outside of boundries
 
-// optional: add preset values
+```javascript
+// update the boundries
+map.updateBoundries({ x: 0, y: 0, width: 256, height: 256, value: 0.16 });
+```
+
+### Add preset heights
+
+```javascript
+// add preset values
 map.addPresets([{ x: 128, y: 128, value: 0.5 }]);
 ```
