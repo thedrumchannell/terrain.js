@@ -38,7 +38,7 @@
          * @return {Array} heights
          */
         
-        this.generateHeights = function(values) {
+        this.generateHeights = function() {
             
             // step size
             var step = size * Math.pow(2, scale) / 2,
