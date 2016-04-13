@@ -1,5 +1,5 @@
 /**
- * Terrain.js 1.1.0
+ * Terrain.js 1.1.1
  * @copyright Copyright (c) 2015-2016 Brandon Channell
  * @license MIT License
  */
@@ -21,22 +21,17 @@
         // extended map size
         var extended = size * Math.pow(2, scale) / 2 * 3 + 1,
         
-            // update the boundaries
-            boundaries = {
-                x: -Infinity,
-                y: -Infinity,
-                width: Infinity,
-                height: Infinity
-            },
+            // update scale factor
+            scale = scale || 1,
             
             // array of height values
             heights = [],
         
             // array of preset values
             presets = [],
-        
-        // update scale factor
-        scale = scale || 1;
+            
+            // the boundries object
+            boundaries = {};
     
         /**
          * Generates an array of heights for this terrain map
@@ -66,7 +61,7 @@
             // generate the base heights
             for (var y = sy; y <= ey; y += step) {
                 for (var x = sx; x <= ex; x += step) {
-                    this.setHeight(x, y, this.normalize(this.displace(x, y, step)));
+                    this.generateHeight(x, y, this.normalize(this.displace(x, y, step)));
                 }
             }
             
@@ -123,6 +118,23 @@
             
             return heights;
         };
+         
+        /**
+         * Sets a generated value for given x and y position
+         * @param {Number} x The x position
+         * @param {Number} y The y position
+         * @param {Number} value The generated value
+         */
+        
+        this.generateHeight = function(x, y, value) {
+            if (boundaries.value && !this.inBoundaries(x, y)) {
+                this.setHeight(x, y, boundaries.value);
+            }
+            if (presets[x] && presets[x][y]) {
+                this.setHeight(x, y, presets[x][y]);
+            }
+            this.setHeight(x, y, value);
+        };
         
         /**
          * Generates center points to create diamond patterns
@@ -133,7 +145,7 @@
          */
         
         this.generateDiamond = function(x, y, half, error) {
-            this.setHeight(x, y,
+            this.generateHeight(x, y,
                 this.normalize(((
                     this.getHeight(x - half, y - half) +
                     this.getHeight(x + half, y - half) +
@@ -152,7 +164,7 @@
          */
         
         this.generateSquare = function(x, y, half, error) {
-            this.setHeight(x, y,
+            this.generateHeight(x, y,
                 this.normalize(((
                     this.getHeight(x - half, y) +
                     this.getHeight(x + half, y) +
@@ -172,28 +184,6 @@
         this.getHeight = function(x, y) {
             return heights[x][y];
         };
-         
-        /**
-         * Sets a value for given x and y position
-         * @param {Number} x The x position
-         * @param {Number} y The y position
-         * @param {Number} value The updated value
-         */
-        
-        this.setHeight = function(x, y, value) {
-            heights[x] = heights[x] || [];
-            
-            // check outside boundaries
-            if (!this.inBoundaries(x, y)) {
-                return heights[x][y] = boundaries.value;
-            }
-            
-            // check for presets value
-            if (presets[x] && presets[x][y]) {
-                return heights[x][y] = presets[x][y];
-            }
-            return heights[x][y] = value;
-        };
         
         /**
          * Returns the array of heights
@@ -203,6 +193,19 @@
         this.getHeights = function() {
             return heights;
         };
+        
+        /**
+         * Sets a value for given x and y position
+         * @param {Number} x The x position
+         * @param {Number} y The y position
+         * @param {Number} value The assigned value
+         * @return {Number} value
+         */
+        
+        this.setHeight = function(x, y, value) {
+            heights[x] = heights[x] || [];
+            return heights[x][y] = value;
+        }
          
         /**
          * Sets values for given array of preset objects
