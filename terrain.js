@@ -31,7 +31,12 @@
             presets = [],
             
             // the boundries object
-            boundaries = {};
+            boundaries = {
+                x: -Infinity,
+                y: -Infinity,
+                width: Infinity,
+                height: Infinity
+            };
     
         /**
          * Generates an array of heights for this terrain map
@@ -127,7 +132,7 @@
          */
         
         this.generateHeight = function(x, y, value) {
-            if (boundaries.value && !this.inBoundaries(x, y)) {
+            if (!this.inBoundaries(x, y)) {
                 this.setHeight(x, y, boundaries.value);
             }
             if (presets[x] && presets[x][y]) {
@@ -222,12 +227,12 @@
         };
          
         /**
-         * Updates the boundaries object
+         * Sets the boundaries object
          * @param {Object} obj The boundaries object
          * @param {Object} boundaries
          */
         
-        this.updateBoundaries = function(obj) {
+        this.setBoundaries = function(obj) {
             return boundaries = obj;
         };
         
