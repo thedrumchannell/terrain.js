@@ -23,14 +23,14 @@ var map = new Terrain(0, 0, 256, randomInt(1000000, 9999999), 12, 1);
 
 ```javascript
 // set the boundaries
-map.setBoundaries({ x: 0, y: 0, width: 256, height: 256, value: 0.16 });
+map.setBoundaries(0, 0, 256, 256, 0.16);
 ```
 
 ## Add preset heights
 
 ```javascript
 // add preset values
-map.addPresets([{ x: 128, y: 128, value: 0.5 }]);
+map.addPreset(128, 128, 0.5);
 ```
 
 ## License

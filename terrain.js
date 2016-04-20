@@ -1,5 +1,5 @@
 /**
- * Terrain.js 1.1.2
+ * Terrain.js 1.2.0
  * @copyright Copyright (c) 2015-2016 Brandon Channell
  * @license MIT License
  */
@@ -20,9 +20,6 @@
         
         // extended map size
         var extended = size * Math.pow(2, scale) / 2 * 3 + 1,
-        
-            // update scale factor
-            scale = scale || 1,
             
             // array of height values
             heights = [],
@@ -46,7 +43,7 @@
         this.generateHeights = function() {
             
             // step size
-            var step = size * Math.pow(2, scale) / 2,
+            var step = size * Math.pow(2, scale || 1) / 2,
                 
                 // step half (center)
                 half = step / 2,
@@ -132,11 +129,11 @@
          */
         
         this.generateHeight = function(x, y, value) {
-            if (!this.inBoundaries(x, y)) {
-                return this.setHeight(x, y, boundaries.value);
-            }
             if (presets[x] && presets[x][y]) {
                 return this.setHeight(x, y, presets[x][y]);
+            }
+            if (!this.inBoundaries(x, y)) {
+                return this.setHeight(x, y, boundaries.value);
             }
             return this.setHeight(x, y, value);
         };
@@ -209,31 +206,40 @@
         
         this.setHeight = function(x, y, value) {
             heights[x] = heights[x] || [];
-            return heights[x][y] = value;
-        }
-         
-        /**
-         * Sets values for given array of preset objects
-         * @param {Array} objs The preset values
-         */
-        
-        this.addPresets = function(objs) {
-            for (var i = 0; i < objs.length; i++) {
-                var x = objs[i].x,
-                    y = objs[i].y;
-                presets[x] = presets[x] || [];
-                presets[x][y] = objs[i].value;
-            }
+            return (heights[x][y] = value);
         };
          
         /**
-         * Sets the boundaries object
-         * @param {Object} obj The boundaries object
+         * Sets a preset value for x and y position
+         * @param {Number} x The x position
+         * @param {Number} y The y position
+         * @param {Number} n The value to assign
+         * @param {Terrain} Reference to this object for method chaining
+         */
+        
+        this.addPreset = function(x, y, n) {
+            presets[x] = presets[x] || [];
+            presets[x][y] = n;
+            return this;
+        };
+         
+        /**
+         * Sets properties for the boundaries object
+         * @param {Number} x The x position
+         * @param {Number} y The y position
+         * @param {Number} width The boundaries width
+         * @param {Number} height The boundaries height
+         * @param {Number} n The value for heights outside boundaries
          * @param {Object} boundaries
          */
         
-        this.setBoundaries = function(obj) {
-            return boundaries = obj;
+        this.setBoundaries = function(x, y, width, height, n) {
+            boundaries.x = x;
+            boundaries.y = y;
+            boundaries.width = width;
+            boundaries.height = height;
+            boundaries.value = n;
+            return boundaries;
         };
         
         /**
@@ -264,7 +270,7 @@
         /**
          * Normalizes value to ensure its within bounds
          * @param {Number} n The value to normalize
-         * @return {Number} A normalized value
+         * @return {Number} A normalized value between 0 and 1
          */
         
         this.normalize = function(n) {

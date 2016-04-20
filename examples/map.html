@@ -26,14 +26,20 @@
                         // canvas imageData
                         imageData = ctx.createImageData(size, size),
                         
+                        // the random seed value
+                        seed = randomInt(1000000, 9999999),
+                        
+                        // the starting coordinates
+                        start = { x: 0, y: 0 },
+                        
                         // the terrain object
-                        map = new Terrain(0, 0, size, randomInt(1000000, 9999999), 12, 1);
+                        map = new Terrain(start.x, start.y, size, seed, 12, 1);
                         
                         // set the boundaries
-                        map.setBoundaries({ x: 0, y: 0, width: size, height: size, value: 0.2 });
+                        map.setBoundaries(0, 0, 512, 512, 0.2);
                         
                         // add preset values
-                        map.addPresets([{ x: 256, y: 256, value: 0.5 }]);
+                        map.addPreset(256, 256, 0.5);
                         
                         // generate terrain heights
                         map.generateHeights();
@@ -42,7 +48,7 @@
                     for (var x = 0; x < size; x++) {
                         for (var y = 0; y < size; y++) {
                             
-                            height = map.getHeight(x, y);
+                            height = map.getHeight(x + start.x, y + start.y);
                             i = (x + y * size) * 4;
                             
                             if (height > 0.4) {
