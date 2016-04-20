@@ -133,12 +133,12 @@
         
         this.generateHeight = function(x, y, value) {
             if (!this.inBoundaries(x, y)) {
-                this.setHeight(x, y, boundaries.value);
+                return this.setHeight(x, y, boundaries.value);
             }
             if (presets[x] && presets[x][y]) {
-                this.setHeight(x, y, presets[x][y]);
+                return this.setHeight(x, y, presets[x][y]);
             }
-            this.setHeight(x, y, value);
+            return this.setHeight(x, y, value);
         };
         
         /**
@@ -237,7 +237,7 @@
         };
         
         /**
-         * Returns true if given x and y position are outside of the boundaries
+         * Returns true if given x and y position are inside the boundaries
          * @param {Number} x The x position
          * @param {Number} y The y position
          */
