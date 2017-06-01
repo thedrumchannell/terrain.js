@@ -86,7 +86,7 @@
                     ex = x1 + size + half;
                     ey = y1 + size + half;
                 } else {
-                    
+
                     // update start positions
                     sx += half;
                     sy += half;
@@ -133,12 +133,12 @@
         
         this.generateHeight = function(x, y, value) {
             if (presets[x] && presets[x][y]) {
-                return this.setHeight(x, y, presets[x][y]);
+                this.setHeight(x, y, presets[x][y]);
+            } else if (!this.inBoundaries(x, y)) {
+                this.setHeight(x, y, boundaries.value);
+            } else {
+                this.setHeight(x, y, value);
             }
-            if (!this.inBoundaries(x, y)) {
-                return this.setHeight(x, y, boundaries.value);
-            }
-            this.setHeight(x, y, value);
         };
         
         /**
@@ -204,11 +204,12 @@
          * @param {Number} x The x position
          * @param {Number} y The y position
          * @param {Number} value The assigned value
-         * @return {Number} value
+         * @return {Terrain} Reference to this object for method chaining
          */
         
         this.setHeight = function(x, y, value) {
-            return (heights[x] = heights[x] || [])[y] = value;
+            (heights[x] = heights[x] || [])[y] = value;
+            return this;
         };
          
         /**
@@ -231,7 +232,7 @@
          * @param {Number} width The boundaries width
          * @param {Number} height The boundaries height
          * @param {Number} value The value assigned to heights outside boundaries
-         * @return {Object} boundaries
+         * @return {Terrain} Reference to this object for method chaining
          */
         
         this.setBoundaries = function(x, y, width, height, value) {
@@ -240,7 +241,7 @@
             boundaries.width = width;
             boundaries.height = height;
             boundaries.value = value;
-            return boundaries;
+            return this;
         };
         
         /**
@@ -286,8 +287,7 @@
          */
         
         this.random = function(x, y) {
-            x = Math.sin(x + 0.5 + (y || 0.5) * seed) * 1000;
-            return x - Math.floor(x);
+            return (x = Math.sin(x + 0.5 + (y || 0.5) * seed) * 1000) - Math.floor(x);
         };
     };  
 })();
