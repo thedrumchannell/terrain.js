@@ -27,7 +27,7 @@
             // array of preset values
             presets = [],
             
-            // the boundries object
+            // the boundaries object
             boundaries = {
                 x: -Infinity,
                 y: -Infinity,
@@ -58,11 +58,14 @@
                 ex = step * 3 + sx,
     
                 // ending y position
-                ey = step * 3 + sy;
+                ey = step * 3 + sy,
+
+                // axis values
+                x, y;
             
             // generate the base heights
-            for (var y = sy; y <= ey; y += step) {
-                for (var x = sx; x <= ex; x += step) {
+            for (y = sy; y <= ey; y += step) {
+                for (x = sx; x <= ex; x += step) {
                     this.generateHeight(x, y, this.normalize(this.displace(x, y, step)));
                 }
             }
@@ -94,22 +97,22 @@
                 }
                 
                 // generate diamonds
-                for (var y = sy; y <= ey; y += step) {
-                    for (var x = sx; x <= ex; x += step) {
+                for (y = sy; y <= ey; y += step) {
+                    for (x = sx; x <= ex; x += step) {
                         this.generateDiamond(x, y, half, this.displace(x, y, step));
                     }
                 }
                 
                 // generate squares
-                for (var y = sy; y <= ey; y += step) {
-                    for (var x = sx; x < ex; x += step) {
+                for (y = sy; y <= ey; y += step) {
+                    for (x = sx; x < ex; x += step) {
                         this.generateSquare(x + half, y, half, this.displace(x + half, y, step));
                     }
                 }
                 
                 // generate squares
-                for (var y = sy; y < ey; y += step) {
-                    for (var x = sx; x <= ex; x += step) {
+                for (y = sy; y < ey; y += step) {
+                    for (x = sx; x <= ex; x += step) {
                         this.generateSquare(x, y + half, half, this.displace(x, y + half, step));
                     }
                 }
@@ -135,7 +138,7 @@
             if (!this.inBoundaries(x, y)) {
                 return this.setHeight(x, y, boundaries.value);
             }
-            return this.setHeight(x, y, value);
+            this.setHeight(x, y, value);
         };
         
         /**
@@ -205,21 +208,19 @@
          */
         
         this.setHeight = function(x, y, value) {
-            heights[x] = heights[x] || [];
-            return (heights[x][y] = value);
+            return (heights[x] = heights[x] || [])[y] = value;
         };
          
         /**
          * Sets a preset value for x and y position
          * @param {Number} x The x position
          * @param {Number} y The y position
-         * @param {Number} n The value to assign
-         * @param {Terrain} Reference to this object for method chaining
+         * @param {Number} value The assigned value
+         * @return {Terrain} Reference to this object for method chaining
          */
         
-        this.addPreset = function(x, y, n) {
-            presets[x] = presets[x] || [];
-            presets[x][y] = n;
+        this.addPreset = function(x, y, value) {
+            (presets[x] = presets[x] || [])[y] = value;
             return this;
         };
          
@@ -229,16 +230,16 @@
          * @param {Number} y The y position
          * @param {Number} width The boundaries width
          * @param {Number} height The boundaries height
-         * @param {Number} n The value for heights outside boundaries
-         * @param {Object} boundaries
+         * @param {Number} value The value assigned to heights outside boundaries
+         * @return {Object} boundaries
          */
         
-        this.setBoundaries = function(x, y, width, height, n) {
+        this.setBoundaries = function(x, y, width, height, value) {
             boundaries.x = x;
             boundaries.y = y;
             boundaries.width = width;
             boundaries.height = height;
-            boundaries.value = n;
+            boundaries.value = value;
             return boundaries;
         };
         
@@ -246,6 +247,7 @@
          * Returns true if given x and y position are inside the boundaries
          * @param {Number} x The x position
          * @param {Number} y The y position
+         * @return {Boolean} True if the x and y coordinates exist within the boundaries
          */
         
         this.inBoundaries = function(x, y) {
