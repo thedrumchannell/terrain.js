@@ -247,7 +247,6 @@
          * Returns true if given x and y position are inside the boundaries
          * @param {Number} x The x position
          * @param {Number} y The y position
-         * @return {Boolean} True if the x and y coordinates exist within the boundaries
          */
         
         this.inBoundaries = function(x, y) {
