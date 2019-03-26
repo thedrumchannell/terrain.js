@@ -1,6 +1,6 @@
 /**
  * Terrain.js 1.2.2
- * @copyright Copyright (c) 2015-2016 Brandon Channell
+ * @copyright Copyright (c) 2015-2019 Brandon Channell
  * @license MIT License
  */
 
